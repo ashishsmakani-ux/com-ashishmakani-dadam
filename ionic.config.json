@@ -1,0 +1,8 @@
+{
+  "name": "com.ashishmakani.dadam",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "f1a6c248"
+}
