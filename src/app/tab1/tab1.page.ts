@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class Tab1Page implements OnInit {
   history: any[] = [];
+  rows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // તમારી ફાઇલ મુજબ ૧૦ રો
 
   constructor() {}
 
@@ -15,90 +16,78 @@ export class Tab1Page implements OnInit {
     this.loadHistory();
   }
 
-  // હિસાબ કરવાની અને સેવ કરવાની મેથડ
+  // ગણતરી અને સેવ કરવાની મેથડ
   saveData() {
+    let totalW = 0, totalS = 0;
     const date = (document.getElementById('date') as HTMLInputElement).value;
-    const trans = Number((document.getElementById('trans') as HTMLInputElement).value) || 0;
-    const lc = Number((document.getElementById('lc') as HTMLInputElement).value) || 0;
-    const labour = Number((document.getElementById('labour') as HTMLInputElement).value) || 0;
-    const weight = Number((document.getElementById('weight') as HTMLInputElement).value) || 0;
-    const rate = Number((document.getElementById('rate') as HTMLInputElement).value) || 0;
-    const commPer = Number((document.getElementById('comm') as HTMLInputElement).value) || 0;
+    const driver = (document.getElementById('driverName') as HTMLInputElement).value || "માહિતી નથી";
+    const loadedCrates = Number((document.getElementById('loadedCrates') as HTMLInputElement).value) || 0;
+    const transRate = Number((document.getElementById('transRate') as HTMLInputElement).value) || 0;
+    const transType = (document.getElementById('transType') as HTMLSelectElement).value;
+    const gradingMode = (document.getElementById('gradingMode') as HTMLSelectElement).value;
 
-    if (!date || !weight || !rate) {
-      alert("મહેરબાની કરીને તારીખ, વજન અને ભાવ ભરો.");
+    // ૧૦ લાઇનનો હિસાબ
+    for (let i = 1; i <= 10; i++) {
+      const w = Number((document.getElementById(`w${i}`) as HTMLInputElement).value) || 0;
+      const p = Number((document.getElementById(`p${i}`) as HTMLInputElement).value) || 0;
+      const type = Number((document.getElementById(`t${i}`) as HTMLSelectElement).value);
+      totalW += w;
+      totalS += (type === 20 ? (w / 20) * p : w * p);
+    }
+
+    if (totalW === 0 || !date) {
+      alert("તારીખ, વજન અને ભાવ લખો!");
       return;
     }
 
-    // ગણતરી (તમારી ફાઇલ મુજબ)
-    const totalIncome = weight * rate;
-    const commAmount = (totalIncome * commPer) / 100;
-    const totalLabour = lc * labour;
-    const marketFees = (totalIncome * 0.5) / 100; // 0.5% માર્કેટ ફી
-    const totalExpense = trans + totalLabour + commAmount + marketFees;
-    const netIncome = totalIncome - totalExpense;
+    // તમારી ફાઇલ મુજબના ખર્ચ
+    const weightCrates = totalW / 20;
+    const exp = weightCrates * ((gradingMode === 'mandi' ? 13 : 0) + 15);
+    const transAmt = (transType === 'perCrate' ? loadedCrates * transRate : transRate);
+    const commission = totalS * 0.03;
+    const netIncome = totalS - (exp + transAmt + commission);
 
-    const entry = {
+    const record = {
       id: Date.now(),
-      date, trans, lc, labour, weight, rate, 
-      commAmount, totalIncome, totalExpense, netIncome,
-      status: 'due'
+      date,
+      driver,
+      totalW: totalW.toFixed(2),
+      totalS: totalS.toFixed(2),
+      transAmt: transAmt.toFixed(2),
+      netIncome: netIncome.toFixed(2),
+      lc: loadedCrates,
+      status: (document.getElementById('transStatus') as HTMLSelectElement).value
     };
 
-    this.history.unshift(entry);
-    localStorage.setItem('dadam_data', JSON.stringify(this.history));
+    this.history.unshift(record);
+    localStorage.setItem('dadam_final_data', JSON.stringify(this.history));
+    alert("હિસાબ સેવ થઈ ગયો!");
     this.loadHistory();
-    alert("હિસાબ સેવ થઈ ગયો છે!");
   }
 
   loadHistory() {
-    const data = localStorage.getItem('dadam_data');
+    const data = localStorage.getItem('dadam_final_data');
     this.history = data ? JSON.parse(data) : [];
-    this.updateHistoryUI();
   }
 
-  updateHistoryUI() {
-    const list = document.getElementById('history-list');
-    if (!list) return;
-
-    if (this.history.length === 0) {
-      list.innerHTML = '<p style="text-align:center;">કોઈ જૂનો હિસાબ નથી.</p>';
-      return;
+  deleteEntry(id: number) {
+    if(confirm("શું તમે આ હિસાબ ડિલીટ કરવા માંગો છો?")) {
+      this.history = this.history.filter(item => item.id !== id);
+      localStorage.setItem('dadam_final_data', JSON.stringify(this.history));
     }
-
-    let html = '';
-    this.history.forEach((item) => {
-      html += `
-        <ion-item-sliding>
-          <ion-item>
-            <ion-label>
-              <h3>📅 ${item.date} | 💰 ચોખ્ખી આવક: ₹${item.netIncome.toFixed(0)}</h3>
-              <p>વજન: ${item.weight}kg | ભાવ: ₹${item.rate} | ખર્ચ: ₹${item.totalExpense.toFixed(0)}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item-options side="end">
-            <ion-item-option color="danger" onclick="window.dispatchEvent(new CustomEvent('delete-entry', {detail: ${item.id}}))">Delete</ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      `;
-    });
-    list.innerHTML = html;
   }
 
-  // નવા વર્ષ માટે બધો ડેટા સાફ કરવા
   resetForm() {
-    if (confirm("શું તમે ખરેખર નવા વર્ષનો હિસાબ શરૂ કરવા માંગો છો? જૂનો બધો ડેટા ભૂંસી નાખવામાં આવશે.")) {
+    if (confirm("નવા વર્ષનો હિસાબ શરૂ કરવાથી જૂનો બધો ડેટા ભૂંસી જશે. શું તમે સહમત છો?")) {
       this.history = [];
-      localStorage.removeItem('dadam_data');
-      this.loadHistory();
+      localStorage.removeItem('dadam_final_data');
     }
   }
 
-  // WhatsApp પર હિસાબ મોકલવા
   shareWhatsApp() {
     if (this.history.length === 0) return;
     const last = this.history[0];
-    const msg = `*દાડમ હિસાબ - આશિષ માકાણી*%0A📅 તારીખ: ${last.date}%0A⚖️ વજન: ${last.weight} kg%0A💸 ભાવ: ₹${last.rate}%0A🚛 ભાડું: ₹${last.trans}%0A💵 *ચોખ્ખી આવક: ₹${last.netIncome.toFixed(0)}*`;
+    const msg = `*દાડમ હિસાબ - આશિષ માકાણી*%0A📅 તારીખ: ${last.date}%0A⚖️ વજન: ${last.totalW} kg%0A🚛 ભાડું: ₹${last.transAmt}%0A✨ *ચોખ્ખી આવક: ₹${last.netIncome}*`;
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   }
 }
