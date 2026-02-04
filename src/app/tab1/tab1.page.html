@@ -1,17 +1,53 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+  <ion-toolbar color="danger">
+    <ion-title>આશિષ માકાણી - દાડમ ડાયરી</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="shareWhatsApp()"><ion-icon name="logo-whatsapp"></ion-icon></ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <div class="container">
+    <ion-list>
+      <ion-item-divider color="light">🚛 ટ્રાન્સપોર્ટ અને મજૂરી</ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">તારીખ</ion-label>
+        <ion-input type="date" id="date"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">ગાડી ભાડું (ફિક્સ)</ion-label>
+        <ion-input type="number" id="trans"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">લોડ થયેલ કેરેટ</ion-label>
+        <ion-input type="number" id="lc"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">મજૂરી (પ્રતિ કેરેટ)</ion-label>
+        <ion-input type="number" id="labour" value="10"></ion-input>
+      </ion-item>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+      <ion-item-divider color="light">💰 વેચાણની વિગત</ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">કુલ વજન (Kg)</ion-label>
+        <ion-input type="number" id="weight"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">भाव (પ્રતિ Kg)</ion-label>
+        <ion-input type="number" id="rate"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">કમિશન (%)</ion-label>
+        <ion-input type="number" id="comm" value="10"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" color="danger" (click)="saveData()" class="ion-margin-top">હિસાબ સેવ કરો</ion-button>
+    <ion-button expand="block" fill="outline" color="dark" (click)="resetForm()">નવા વર્ષનો હિસાબ (Clear All)</ion-button>
+  </div>
+
+  <ion-list-header class="ion-margin-top">📜 જૂનો હિસાબ (History)</ion-list-header>
+  <ion-list id="history-list">
+    </ion-list>
 </ion-content>
