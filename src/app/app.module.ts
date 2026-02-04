@@ -1,16 +1,18 @@
+import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
-
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Tab1Page } from './tab1.page';
+import { Tab1PageRoutingModule } from './tab1-routing.module';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
-  bootstrap: [AppComponent],
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    Tab1PageRoutingModule,
+    Tab1Page // Standalone component ને અહીં import માં રાખવું
+  ],
+  declarations: [] // અહીંથી Tab1Page કાઢી નાખ્યું છે જેથી એરર ન આવે
 })
-export class AppModule {}
+export class Tab1PageModule {}
