@@ -11,8 +11,20 @@ import { FormsModule } from '@angular/forms';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class Tab1Page implements OnInit {
+  // તમારી ફાઇલ મુજબના ફિલ્ડ્સ
+  currentDate: string = new Date().toISOString().split('T')[0];
+  driverName: string = '';
+  loadedCrates: number = 0;
+  transRate: number = 0;
+  transType: string = 'perCrate';
+  gradingMode: string = 'mandi';
+  transStatus: string = 'due';
+
+  // ૧૦ લાઇનનો હિસાબ
+  rows = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  entryRows = this.rows.map(() => ({ w: null, p: null, t: 20 }));
+
   history: any[] = [];
-  rows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; 
 
   constructor() {}
 
@@ -20,49 +32,46 @@ export class Tab1Page implements OnInit {
     this.loadHistory();
   }
 
+  // તમારી ફાઇલ મુજબની ગણતરી (Calculation Logic)
   saveData() {
-    let totalW = 0, totalS = 0;
-    const dateInput = document.getElementById('date') as HTMLInputElement;
-    const date = dateInput ? dateInput.value : '';
-    
-    for (let i = 1; i <= 10; i++) {
-      const w = Number((document.getElementById(`w${i}`) as HTMLInputElement)?.value) || 0;
-      const p = Number((document.getElementById(`p${i}`) as HTMLInputElement)?.value) || 0;
-      const type = Number((document.getElementById(`t${i}`) as HTMLSelectElement)?.value) || 20;
-      totalW += w;
-      totalS += (type === 20 ? (w / 20) * p : w * p);
-    }
+    let totalW = 0;
+    let totalS = 0;
 
-    if (totalW === 0 || !date) {
-      alert("તારીખ અને હિસાબની વિગત ભરો!");
+    this.entryRows.forEach(row => {
+      if (row.w && row.p) {
+        totalW += Number(row.w);
+        totalS += (Number(row.t) === 20) ? (Number(row.w) / 20 * Number(row.p)) : (Number(row.w) * Number(row.p));
+      }
+    });
+
+    if (totalW === 0) {
+      alert("મહેરબાની કરીને વજન અને ભાવ ભરો!");
       return;
     }
 
     const weightCrates = totalW / 20;
-    const grading = (document.getElementById('gradingMode') as HTMLSelectElement)?.value;
-    const exp = weightCrates * ((grading === 'mandi' ? 13 : 0) + 15);
-    
-    const lc = Number((document.getElementById('loadedCrates') as HTMLInputElement)?.value) || weightCrates;
-    const tr = Number((document.getElementById('transRate') as HTMLInputElement)?.value) || 0;
-    const tt = (document.getElementById('transType') as HTMLSelectElement)?.value;
-    const transAmt = (tt === 'perCrate' ? lc * tr : tr);
-    
+    const gradingExp = weightCrates * (this.gradingMode === 'mandi' ? 13 : 0);
+    const labourExp = weightCrates * 15;
+    const transAmt = (this.transType === 'perCrate') ? (this.loadedCrates * this.transRate) : this.transRate;
     const commission = totalS * 0.03;
-    const netIncome = totalS - (exp + transAmt + commission);
+    const totalExp = gradingExp + labourExp + transAmt + commission;
+    const netIncome = totalS - totalExp;
 
-    const record = {
+    const newEntry = {
       id: Date.now(),
-      date,
+      date: this.currentDate,
+      driver: this.driverName || 'માહિતી નથી',
       totalW: totalW.toFixed(2),
-      netIncome: netIncome.toFixed(0),
-      transAmt: transAmt.toFixed(0),
-      status: (document.getElementById('transStatus') as HTMLSelectElement)?.value || 'due'
+      net: netIncome.toFixed(0),
+      lc: this.loadedCrates,
+      trans: transAmt,
+      status: this.transStatus
     };
 
-    this.history.unshift(record);
+    this.history.unshift(newEntry);
     localStorage.setItem('dadam_final_data', JSON.stringify(this.history));
-    alert("હિસાબ સેવ થયો!");
-    this.loadHistory();
+    alert("હિસાબ સેવ થઈ ગયો!");
+    this.clearForm();
   }
 
   loadHistory() {
@@ -70,17 +79,35 @@ export class Tab1Page implements OnInit {
     this.history = data ? JSON.parse(data) : [];
   }
 
-  resetForm() {
-    if (confirm("નવા વર્ષનો હિસાબ શરૂ કરવો છે? જૂનો ડેટા ભૂંસી જશે.")) {
-      this.history = [];
-      localStorage.removeItem('dadam_final_data');
+  deleteData(id: number) {
+    if (confirm("શું તમે આ હિસાબ ડિલીટ કરવા માંગો છો?")) {
+      this.history = this.history.filter(item => item.id !== id);
+      localStorage.setItem('dadam_final_data', JSON.stringify(this.history));
     }
   }
 
+  resetForNewYear() {
+    if (confirm("નવા વર્ષનો હિસાબ શરૂ કરવાથી જૂનો બધો ડેટા ભૂંસી નાખવામાં આવશે. શું તમે સહમત છો?")) {
+      this.history = [];
+      localStorage.removeItem('dadam_final_data');
+      alert("બધો ડેટા સાફ થઈ ગયો છે. નવું વર્ષ મુબારક!");
+    }
+  }
+
+  clearForm() {
+    this.entryRows = this.rows.map(() => ({ w: null, p: null, t: 20 }));
+    this.driverName = '';
+    this.loadedCrates = 0;
+    this.transRate = 0;
+  }
+
   shareWhatsApp() {
-    if (this.history.length === 0) return;
+    if (this.history.length === 0) {
+      alert("શેર કરવા માટે કોઈ ડેટા નથી!");
+      return;
+    }
     const last = this.history[0];
-    const msg = `*દાડમ હિસાબ*%0A📅 તારીખ: ${last.date}%0A⚖️ વજન: ${last.totalW}kg%0A💵 *ચોખ્ખી આવક: ₹${last.netIncome}*`;
+    const msg = `*દાડમ હિસાબ - આશિષ માકાણી*%0A📅 તારીખ: ${last.date}%0A⚖️ વજન: ${last.totalW} kg%0A🚛 ભાડું: ₹${last.trans}%0A💵 *ચોખ્ખી આવક: ₹${last.net}*`;
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   }
 }
