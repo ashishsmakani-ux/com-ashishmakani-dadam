@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar color="danger">
     <ion-title>આશિષ માકાણી - દાડમ ડાયરી</ion-title>
     <ion-buttons slot="end">
@@ -8,46 +8,48 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="container">
-    <ion-list>
-      <ion-item-divider color="light">🚛 ટ્રાન્સપોર્ટ અને મજૂરી</ion-item-divider>
-      <ion-item>
-        <ion-label position="floating">તારીખ</ion-label>
-        <ion-input type="date" id="date"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">ગાડી ભાડું (ફિક્સ)</ion-label>
-        <ion-input type="number" id="trans"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">લોડ થયેલ કેરેટ</ion-label>
-        <ion-input type="number" id="lc"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">મજૂરી (પ્રતિ કેરેટ)</ion-label>
-        <ion-input type="number" id="labour" value="10"></ion-input>
-      </ion-item>
-
-      <ion-item-divider color="light">💰 વેચાણની વિગત</ion-item-divider>
-      <ion-item>
-        <ion-label position="floating">કુલ વજન (Kg)</ion-label>
-        <ion-input type="number" id="weight"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">भाव (પ્રતિ Kg)</ion-label>
-        <ion-input type="number" id="rate"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">કમિશન (%)</ion-label>
-        <ion-input type="number" id="comm" value="10"></ion-input>
-      </ion-item>
-    </ion-list>
-
-    <ion-button expand="block" color="danger" (click)="saveData()" class="ion-margin-top">હિસાબ સેવ કરો</ion-button>
-    <ion-button expand="block" fill="outline" color="dark" (click)="resetForm()">નવા વર્ષનો હિસાબ (Clear All)</ion-button>
+  <div style="background: #fff3e0; padding: 15px; border-radius: 15px; border: 2px solid #ff9800; margin-bottom: 20px;">
+    <ion-item lines="none" style="--background: transparent;">
+      <ion-label position="floating">તારીખ</ion-label>
+      <ion-input type="date" [(ngModel)]="currentDate"></ion-input>
+    </ion-item>
+    <ion-item lines="none" style="--background: transparent;">
+      <ion-input type="text" [(ngModel)]="driverName" placeholder="👤 ગાડી માલિકનું નામ"></ion-input>
+    </ion-item>
+    <ion-row>
+      <ion-col size="6"><ion-input type="number" [(ngModel)]="loadedCrates" placeholder="📦 લોડ કેરેટ"></ion-input></ion-col>
+      <ion-col size="6"><ion-input type="number" [(ngModel)]="transRate" placeholder="₹ ભાડા ભાવ"></ion-input></ion-col>
+    </ion-row>
   </div>
 
-  <ion-list-header class="ion-margin-top">📜 જૂનો હિસાબ (History)</ion-list-header>
-  <ion-list id="history-list">
-    </ion-list>
+  <ion-list-header><ion-label color="primary">📊 માલની વિગત (વજન અને ભાવ)</ion-label></ion-list-header>
+  <div *ngFor="let row of rows; let i = index" style="display: flex; gap: 5px; margin-bottom: 5px; align-items: center;">
+    <div style="width: 25px; font-weight: bold; color: #b71c1c;">{{i+1}}</div>
+    <ion-input type="number" [(ngModel)]="entryRows[i].w" placeholder="વજન" style="border: 1px solid #ccc; border-radius: 5px; text-align: center;"></ion-input>
+    <ion-input type="number" [(ngModel)]="entryRows[i].p" placeholder="ભાવ" style="border: 1px solid #ccc; border-radius: 5px; text-align: center;"></ion-input>
+    <select [(ngModel)]="entryRows[i].t" style="border: 1px solid #ccc; border-radius: 5px; height: 38px;">
+      <option value="20">20kg</option>
+      <option value="1">1kg</option>
+    </select>
+  </div>
+
+  <ion-button expand="block" color="success" (click)="saveData()" style="margin-top: 20px;">💾 હિસાબ સેવ કરો</ion-button>
+  <ion-button expand="block" fill="outline" color="dark" (click)="resetForNewYear()">🆕 નવા વર્ષનો હિસાબ (Clear All)</ion-button>
+
+  <h3 style="text-align: center; color: #b71c1c; margin-top: 30px;">📅 સીઝન ઇતિહાસ</h3>
+  <ion-card *ngFor="let item of history" style="border-left: 8px solid #b71c1c; margin-bottom: 10px;">
+    <ion-card-content>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <b>📅 {{item.date}}</b>
+        <ion-badge color="danger">બાકી</ion-badge>
+      </div>
+      <p style="margin: 5px 0;">👤 {{item.driver}} | 📦 {{item.lc}} કેરેટ</p>
+      <p style="font-size: 16px; color: #1b5e20;"><b>💵 ચોખ્ખી આવક: ₹{{item.net}}</b></p>
+      <div style="text-align: right;">
+        <ion-button size="small" fill="clear" color="danger" (click)="deleteData(item.id)">
+          <ion-icon name="trash-outline" slot="start"></ion-icon> ડિલીટ
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
