@@ -1,0 +1,25 @@
+{
+  "name": "આશિષ માકાણી",
+  "short_name": "માકાણી",
+  "description": "આશિષ માકાણી - UX Designer Portfolio",
+  "start_url": "/com-ashishmakani-dadam/",
+  "scope": "/com-ashishmakani-dadam/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3367D6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/com-ashishmakani-dadam/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/com-ashishmakani-dadam/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
