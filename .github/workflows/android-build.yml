@@ -17,11 +17,12 @@ jobs:
         with:
           node-version: '22'
       - run: npm install
+      - run: npm install @capacitor/android @capacitor/core @capacitor/cli
       - run: npm install -g @ionic/cli
       - run: ionic build
       - name: Create Android Folder
         run: |
-          npx cap add android
+          npx cap add android || true
           npx cap sync
       - name: Build with Gradle
         run: |
