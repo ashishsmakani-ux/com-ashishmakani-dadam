@@ -18,10 +18,10 @@
 
   <ion-row style="margin-bottom: 15px;">
     <ion-col size="6">
-      <ion-button expand="block" fill="outline" (click)="setAllTo20()" style="--border-radius: 10px; font-size: 13px;">બધા ૨૦ કિલો કરો</ion-button>
+      <ion-button expand="block" fill="outline" (click)="setAllTo20()" style="--border-radius: 10px; font-size: 13px; font-weight: bold;">બધા ૨૦ કિલો કરો</ion-button>
     </ion-col>
     <ion-col size="6">
-      <ion-button expand="block" fill="outline" (click)="setAllTo1()" style="--border-radius: 10px; font-size: 13px;">બધા ૧ કિલો કરો</ion-button>
+      <ion-button expand="block" fill="outline" (click)="setAllTo1()" style="--border-radius: 10px; font-size: 13px; font-weight: bold;">બધા ૧ કિલો કરો</ion-button>
     </ion-col>
   </ion-row>
 
@@ -31,7 +31,7 @@
       <ion-input type="date" [(ngModel)]="currentDate"></ion-input>
     </ion-item>
     <ion-item lines="none">
-      <ion-input [(ngModel)]="driverName" placeholder="👤 ગાડી માલિકનું નામ"></ion-input>
+      <ion-input [(ngModel)]="driverName" placeholder="👤 ગાડી / ડ્રાઈવરનું નામ"></ion-input>
     </ion-item>
     <ion-item lines="none">
       <ion-input [(ngModel)]="mandiName" placeholder="🏛️ મંડીનું નામ"></ion-input>
@@ -62,15 +62,15 @@
 
   <div *ngFor="let row of entryRows; let i = index" style="background: white; border: 1px solid #eee; display: flex; align-items: center; border-top: none;">
     <ion-col size="1.5" style="text-align: center;">{{i+1}}</ion-col>
-    <ion-col size="3"><ion-input type="number" [(ngModel)]="row.w" (ionInput)="calculateBill()" style="text-align: center;"></ion-input></ion-col>
-    <ion-col size="3"><ion-input type="number" [(ngModel)]="row.p" (ionInput)="calculateBill()" style="text-align: center;"></ion-input></ion-col>
+    <ion-col size="3"><ion-input type="number" [(ngModel)]="row.w" (ionInput)="calculateBill()" style="text-align: center; border-bottom: 1px solid #ddd;"></ion-input></ion-col>
+    <ion-col size="3"><ion-input type="number" [(ngModel)]="row.p" (ionInput)="calculateBill()" style="text-align: center; border-bottom: 1px solid #ddd;"></ion-input></ion-col>
     <ion-col size="2.5">
       <ion-select [(ngModel)]="row.t" (ionChange)="calculateBill()" interface="popover" style="font-size: 12px;">
         <ion-select-option value="20">20kg</ion-select-option>
         <ion-select-option value="1">1kg</ion-select-option>
       </ion-select>
     </ion-col>
-    <ion-col size="2" style="font-weight: bold; color: #2e7d32;">{{ (row.w && row.p) ? (row.t == '20' ? row.w*row.p/20 : row.w*row.p).toFixed(0) : '0' }}</ion-col>
+    <ion-col size="2" style="font-weight: bold; color: #2e7d32; text-align: center;">{{ (row.w && row.p) ? (row.t == '20' ? row.w*row.p/20 : row.w*row.p).toFixed(0) : '0' }}</ion-col>
   </div>
 
   <div *ngIf="showSummary" style="margin-top: 20px; background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 15px; padding: 15px;">
@@ -86,7 +86,16 @@
   </div>
 
   <ion-row style="margin-top: 20px;">
-    <ion-col size="6"><ion-button expand="block" color="primary" (click)="saveData()">સેવ કરો</ion-button></ion-col>
-    <ion-col size="6"><ion-button expand="block" color="success" (click)="shareWhatsApp()">શેર કરો</ion-button></ion-col>
+    <ion-col size="6">
+      <ion-button expand="block" color="primary" (click)="saveData()">
+        <ion-icon name="save-outline" slot="start"></ion-icon> સેવ કરો
+      </ion-button>
+    </ion-col>
+    <ion-col size="6">
+      <ion-button expand="block" color="success" (click)="shareWhatsApp()">
+        <ion-icon name="logo-whatsapp" slot="start"></ion-icon> શેર કરો
+      </ion-button>
+    </ion-col>
   </ion-row>
+
 </ion-content>
