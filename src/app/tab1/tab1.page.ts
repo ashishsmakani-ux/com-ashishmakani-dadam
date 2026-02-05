@@ -51,7 +51,7 @@ export class Tab1Page implements OnInit {
     });
 
     if (totalW === 0) {
-      alert("મહેરબાની કરીને વજન અને ભાવ લખો!");
+      this.showSummary = false;
       return;
     }
 
@@ -70,13 +70,13 @@ export class Tab1Page implements OnInit {
     this.mandiCharge = commission.toFixed(2);
     this.netIncome = netInc.toFixed(0);
     this.averageRate = (netInc / totalW).toFixed(2);
-    
     this.showSummary = true;
   }
 
   saveData() {
-    if (!this.showSummary) {
-      this.calculateBill();
+    if (!this.showSummary || Number(this.totalWeight) === 0) {
+      alert("મહેરબાની કરીને પહેલા વિગતો ભરો!");
+      return;
     }
 
     const newEntry = {
@@ -89,12 +89,11 @@ export class Tab1Page implements OnInit {
       avg: this.averageRate
     };
 
-    // 'dadam_history' નામે ટેબ 2 માટે સેવ થશે
     const history = JSON.parse(localStorage.getItem('dadam_history') || '[]');
     history.unshift(newEntry);
     localStorage.setItem('dadam_history', JSON.stringify(history));
 
-    alert("હિસાબ ટેબ 2 માં સેવ થઈ ગયો!");
+    alert("હિસાબ ઇતિહાસમાં સેવ થઈ ગયો!");
     this.clearForm();
   }
 
@@ -109,7 +108,7 @@ export class Tab1Page implements OnInit {
 
   shareWhatsApp() {
     if (!this.showSummary) return;
-    const msg = `*દાડમ મંડી હિસાબ*%0A📅 તારીખ: ${this.currentDate}%0A🏢 મંડી: ${this.mandiName}%0A⚖️ વજન: ${this.totalWeight} kg%0A💵 *ચોખ્ખી આવક: ₹${this.netIncome}*`;
+    const msg = `*દાડમ મંડી હિસાબ*%0A📅 તારીખ: ${this.currentDate}%0A🏢 મંડી: ${this.mandiName}%0A⚖️ વજન: ${this.totalWeight} kg%0A💵 *ચોખ્ખી આવક: ₹${this.netIncome}*%0A📈 સરેરાશ: ₹${this.averageRate}/kg`;
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   }
 }
