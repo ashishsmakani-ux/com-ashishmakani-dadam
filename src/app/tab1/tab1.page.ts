@@ -36,8 +36,8 @@ export class Tab1Page {
         this.totalSales += (row.t === '20') ? (row.w * row.p / 20) : (row.w * row.p);
       }
     });
-    let gradingCharge = this.gradingMode === 'mandi' ? (this.loadedCrates * 13) : 0;
-    this.totalExpense = (this.loadedCrates * this.transRate) + gradingCharge;
+    let gradingCharge = this.gradingMode === 'mandi' ? (Number(this.loadedCrates || 0) * 13) : 0;
+    this.totalExpense = (Number(this.loadedCrates || 0) * Number(this.transRate || 0)) + gradingCharge;
     this.mandiTax = (this.totalSales * 3) / 100;
     this.netIncome = this.totalSales - this.totalExpense - this.mandiTax;
     this.averageRate = this.totalWeight > 0 ? (this.totalSales / this.totalWeight) : 0;
@@ -47,17 +47,21 @@ export class Tab1Page {
   saveData() {
     if (this.totalSales <= 0) return;
     const record = {
-      date: this.currentDate, driver: this.driverName || 'અજ્ઞાત', mandi: this.mandiName || 'અજ્ઞાત',
-      totalWeight: this.totalWeight.toFixed(2), netIncome: this.netIncome.toFixed(2)
+      date: this.currentDate,
+      driver: this.driverName || 'અજ્ઞાત',
+      mandi: this.mandiName || 'અજ્ઞાત',
+      totalWeight: this.totalWeight.toFixed(2),
+      netIncome: this.netIncome.toFixed(2),
+      totalSales: this.totalSales.toFixed(2)
     };
     let history = JSON.parse(localStorage.getItem('agri_records') || '[]');
     history.push(record);
     localStorage.setItem('agri_records', JSON.stringify(history));
-    alert('સેવ થઈ ગયું!');
+    alert('હિસાબ સેવ થઈ ગયો!');
   }
 
   shareWhatsApp() {
-    const text = `🍎 *આશિષ માકાણી* 🍎\n📅 તારીખ: ${this.currentDate}\n🚚 ગાડી: ${this.driverName}\n⚖️ વજન: ${this.totalWeight.toFixed(2)}kg\n💰 *ચોખ્ખી આવક: ₹ ${this.netIncome.toFixed(2)}*`;
+    const text = `🍎 *આશિષ માકાણી - ખેતીવાડી* 🍎\n--------------------------\n📅 તારીખ: ${this.currentDate}\n🚚 ગાડી: ${this.driverName}\n🏛️ મંડી: ${this.mandiName}\n--------------------------\n⚖️ વજન: ${this.totalWeight.toFixed(2)}kg\n💰 *ચોખ્ખી આવક: ₹ ${this.netIncome.toFixed(2)}*\n--------------------------`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   }
 }
