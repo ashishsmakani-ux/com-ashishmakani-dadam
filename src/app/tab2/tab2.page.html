@@ -1,44 +1,18 @@
 <ion-header>
-  <ion-toolbar style="--background: #b71c1c;">
-    <ion-title style="color: white; font-weight: bold;">📜 સીઝન ઇતિહાસ</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>સેવ કરેલા હિસાબ</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #fffafa;">
-  <div *ngIf="history.length === 0" style="text-align: center; margin-top: 60px; color: #b71c1c;">
-    <ion-icon name="archive-outline" style="font-size: 80px; opacity: 0.3;"></ion-icon>
-    <p style="font-size: 18px; font-weight: 500;">હજુ સુધી કોઈ હિસાબ સેવ નથી કર્યો.</p>
-  </div>
-
-  <ion-card *ngFor="let item of history" style="border-radius: 18px; margin-bottom: 18px; border-left: 10px solid #2e7d32; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+<ion-content class="ion-padding">
+  <ion-card *ngFor="let item of savedDataList" style="border-radius: 15px; margin-bottom: 10px; border-left: 5px solid #b31217;">
+    <ion-card-header>
+      <ion-card-title>{{ item.driverName }}</ion-card-title>
+      <ion-card-subtitle>{{ item.date | date:'dd/MM/yyyy' }}</ion-card-subtitle>
+    </ion-card-header>
     <ion-card-content>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <span style="background: #ffebee; color: #c62828; padding: 4px 10px; border-radius: 8px; font-weight: bold;">📅 {{item.date}}</span>
-        <b style="color: #333;">⚖️ {{item.totalW}} kg</b>
-      </div>
-      
-      <p style="color: #555; margin: 4px 0;">🏢 <b>મંડી:</b> {{item.mandi}}</p>
-      <p style="color: #555; margin: 4px 0;">👤 <b>ગાડી:</b> {{item.driver}}</p>
-      
-      <div style="background: #e8f5e9; padding: 12px; border-radius: 12px; margin-top: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h2 style="color: #1b5e20; margin: 0; font-weight: 800;">₹{{item.net}}</h2>
-          <span style="color: #2e7d32; font-size: 14px;">📈 ₹{{item.avg}}/kg</span>
-        </div>
-      </div>
-
-      <ion-row style="margin-top: 10px;">
-        <ion-col>
-          <ion-button fill="clear" color="success" (click)="shareAgain(item)">
-            <ion-icon name="logo-whatsapp" slot="start"></ion-icon> શેર
-          </ion-button>
-        </ion-col>
-        <ion-col style="text-align: right;">
-          <ion-button fill="clear" color="danger" (click)="deleteItem(item.id)">
-            <ion-icon name="trash-outline" slot="start"></ion-icon> ડિલીટ
-          </ion-button>
-        </ion-col>
-      </ion-row>
+      <p>⚖️ કુલ વજન: <b>{{ item.totalWeight }} kg</b></p>
+      <h2 style="color: #2e7d32;">ચોખ્ખી આવક: ₹ {{ item.netIncome }}</h2>
     </ion-card-content>
   </ion-card>
 </ion-content>
