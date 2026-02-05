@@ -1,90 +1,72 @@
 <ion-header>
-  <ion-toolbar style="--background: #b71c1c;">
-    <ion-title style="color: white; font-weight: bold;">આશિષ માકાણી - દાડમ ડાયરી</ion-title>
+  <ion-toolbar color="danger">
+    <ion-title style="font-weight: bold;">દાડમ મંડી</ion-title>
     <ion-buttons slot="end">
-      <ion-icon name="logo-whatsapp" style="color: white; font-size: 28px; margin-right: 15px;" (click)="shareWhatsApp()"></ion-icon>
+      <ion-button (click)="shareWhatsApp()">
+        <ion-icon name="logo-whatsapp" size="large"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div style="background: #fff3e0; padding: 15px; border-radius: 15px; border: 2px solid #ff9800; margin-bottom: 15px;">
-    <ion-label style="color: #e65100; font-weight: bold;">તારીખ</ion-label>
-    <ion-input type="date" [(ngModel)]="currentDate" style="font-size: 18px;"></ion-input>
-    
-    <ion-item lines="none" style="--background: transparent; margin-top: 10px;">
-      <ion-icon name="person" slot="start"></ion-icon>
-      <ion-input type="text" [(ngModel)]="driverName" placeholder="ગાડી માલિકનું નામ"></ion-input>
+<ion-content class="ion-padding" style="--background: #fff5f5;">
+  <div style="background: white; padding: 10px; border-radius: 15px; border: 1px solid #ffcdd2; margin-bottom: 15px;">
+    <ion-item lines="none">
+      <ion-label position="stacked"><b>📅 તારીખ</b></ion-label>
+      <ion-input type="date" [(ngModel)]="currentDate"></ion-input>
     </ion-item>
-
-    <ion-item lines="none" style="--background: transparent; border-top: 1px dashed #ff9800;">
-      <ion-icon name="business" slot="start"></ion-icon>
-      <ion-input type="text" [(ngModel)]="mandiName" placeholder="મંડીનું નામ"></ion-input>
+    <ion-item lines="none">
+      <ion-input placeholder="👤 ગાડી માલિકનું નામ" [(ngModel)]="driverName"></ion-input>
     </ion-item>
-
-    <ion-item lines="none" style="--background: #ffffff; margin-top: 10px; border: 1px solid #ff9800; border-radius: 8px;">
-      <ion-label style="font-weight: bold;">ગ્રેડિંગ:</ion-label>
-      <select [(ngModel)]="gradingMode" style="border: none; background: transparent; font-size: 16px; width: 100%;">
-        <option value="mandi">🏢 મંડી ગ્રેડિંગ (ખર્ચ ₹13)</option>
-        <option value="khedut">👨‍🌾 ખેડૂત ગ્રેડિંગ (ફ્રી)</option>
-      </select>
+    <ion-item lines="none">
+      <ion-input placeholder="🏢 મંડીનું નામ" [(ngModel)]="mandiName"></ion-input>
     </ion-item>
-
+    <ion-item lines="none">
+      <ion-label>ગ્રેડિંગ:</ion-label>
+      <ion-select [(ngModel)]="gradingMode" (ionChange)="calculateBill()">
+        <ion-select-option value="mandi">મંડી (₹13)</ion-select-option>
+        <ion-select-option value="home">ઘર (₹0)</ion-select-option>
+      </ion-select>
+    </ion-item>
     <ion-row>
-      <ion-col size="6">
-        <ion-label style="font-size: 13px; font-weight: bold;">લોડ કેરેટ</ion-label>
-        <ion-input type="number" [(ngModel)]="loadedCrates" placeholder="0" style="border: 1px solid #ff9800; border-radius: 8px; background: white;"></ion-input>
-      </ion-col>
-      <ion-col size="6">
-        <ion-label style="font-size: 13px; font-weight: bold;">ભાડા ભાવ</ion-label>
-        <ion-input type="number" [(ngModel)]="transRate" placeholder="0" style="border: 1px solid #ff9800; border-radius: 8px; background: white;"></ion-input>
-      </ion-col>
+      <ion-col><ion-input type="number" placeholder="કેરેટ" [(ngModel)]="loadedCrates" (ionInput)="calculateBill()" style="border-bottom: 1px solid #ccc;"></ion-input></ion-col>
+      <ion-col><ion-input type="number" placeholder="ભાડું" [(ngModel)]="transRate" (ionInput)="calculateBill()" style="border-bottom: 1px solid #ccc;"></ion-input></ion-col>
     </ion-row>
   </div>
 
-  <h6 style="color: #b71c1c; font-weight: bold;">📊 માલની વિગત (વજન અને ભાવ)</h6>
-  <div *ngFor="let row of entryRows; let i = index" style="display: flex; gap: 5px; margin-bottom: 8px;">
-    <div style="width: 20px; color: #b71c1c; font-weight: bold; padding-top: 10px;">{{i+1}}</div>
-    <ion-input type="number" [(ngModel)]="row.w" placeholder="વજન" style="border: 1px solid #ccc; border-radius: 5px; background: white;"></ion-input>
-    <ion-input type="number" [(ngModel)]="row.p" placeholder="ભાવ" style="border: 1px solid #ccc; border-radius: 5px; background: white;"></ion-input>
-    <select [(ngModel)]="row.t" style="border: 1px solid #ccc; border-radius: 5px; background: white; width: 80px;">
-      <option value="20">20kg</option>
-      <option value="1">1kg</option>
-    </select>
-  </div>
+  <ion-row style="background: #ef5350; color: white; font-weight: bold; text-align: center; border-radius: 5px;">
+    <ion-col size="1">#</ion-col>
+    <ion-col size="3">વજન</ion-col>
+    <ion-col size="3">ભાવ</ion-col>
+    <ion-col size="2.5">એકમ</ion-col>
+    <ion-col size="2.5">1kg</ion-col>
+  </ion-row>
 
-  <ion-button expand="block" (click)="calculateBill()" style="--background: #1b5e20; font-weight: bold; margin-top: 15px;">
-    🧮 હિસાબ ગણો
-  </ion-button>
-
-  <div *ngIf="showSummary" style="margin-top: 20px; padding: 15px; border: 2px solid #1b5e20; border-radius: 15px; background: #f1f8e9;">
-    <h5 style="text-align: center; color: #1b5e20; font-weight: bold;">📋 હિસાબની વિગત</h5>
-    <p>કુલ વજન: <b>{{totalWeight}} kg</b></p>
-    <p>કુલ વેચાણ: <b>₹{{totalSales}}</b></p>
-    <p>ખર્ચ (ગ્રેડિંગ + ભાડું): <b>₹{{totalExpense}}</b></p>
-    <p>મંડી ચાર્જ (3%): <b>₹{{mandiCharge}}</b></p>
-    
-    <div style="background: #2e7d32; color: white; padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center;">
-      <h6 style="margin: 0;">ચોખ્ખી આવક: ₹{{netIncome}}</h6>
-    </div>
-    
-    <div style="background: #4caf50; color: white; padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center;">
-      <h6 style="margin: 0;">સરેરાશ: ₹{{averageRate}} /kg</h6>
-    </div>
-  </div>
-
-  <ion-row style="margin-top: 20px;">
-    <ion-col size="6">
-      <ion-button expand="block" (click)="saveData()" style="--background: #0277bd; font-weight: bold; height: 60px;">
-        💾 હિસાબ સેવ<br>કરો
-      </ion-button>
+  <ion-row *ngFor="let row of entryRows; let i = index" style="align-items: center; border-bottom: 1px solid #ffebee;">
+    <ion-col size="1"><b>{{i+1}}</b></ion-col>
+    <ion-col size="3"><ion-input type="number" [(ngModel)]="row.w" (ionInput)="calculateBill()"></ion-input></ion-col>
+    <ion-col size="3"><ion-input type="number" [(ngModel)]="row.p" (ionInput)="calculateBill()"></ion-input></ion-col>
+    <ion-col size="2.5">
+      <ion-select [(ngModel)]="row.t" (ionChange)="calculateBill()" interface="popover">
+        <ion-select-option value="20">20kg</ion-select-option>
+        <ion-select-option value="1">1kg</ion-select-option>
+      </ion-select>
     </ion-col>
-    <ion-col size="6">
-      <ion-button expand="block" (click)="shareWhatsApp()" style="--background: #4caf50; font-weight: bold; height: 60px;">
-        📲 WhatsApp<br>શેર
-      </ion-button>
+    <ion-col size="2.5" style="font-size: 11px; text-align: center; color: #2e7d32;">
+      <b *ngIf="row.p">₹{{ (row.t === '20' ? row.p/20 : row.p).toFixed(2) }}</b>
     </ion-col>
   </ion-row>
 
-  <h3 style="text-align: center; color: #b71c1c; margin-top: 30px;">📅 સીઝન ઇતિહાસ (ટેબ 2)</h3>
-  </ion-content>
+  <div *ngIf="showSummary" style="margin-top: 20px; background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 15px; padding: 15px;">
+    <p>⚖️ કુલ વજન: <b>{{totalWeight}} kg</b> | 💸 વેચાણ: <b>₹{{totalSales}}</b></p>
+    <p>📉 કુલ ખર્ચ: <b>₹{{totalExpense}}</b> (કમિશન: ₹{{mandiCharge}})</p>
+    <hr style="border: 0.5px solid #2e7d32;">
+    <h2 style="color: #1b5e20; text-align: center; margin: 10px 0;"><b>ચોખ્ખી આવક: ₹{{netIncome}}</b></h2>
+    <p style="text-align: center; color: #2e7d32; margin: 0;">📈 સરેરાશ: <b>₹{{averageRate}} /kg</b></p>
+  </div>
+
+  <ion-row style="margin-top: 20px;">
+    <ion-col size="6"><ion-button expand="block" color="primary" (click)="saveData()">💾 સેવ કરો</ion-button></ion-col>
+    <ion-col size="6"><ion-button expand="block" color="success" (click)="shareWhatsApp()">📲 શેર કરો</ion-button></ion-col>
+  </ion-row>
+</ion-content>
