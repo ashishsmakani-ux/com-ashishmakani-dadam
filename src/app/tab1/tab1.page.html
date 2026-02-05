@@ -75,13 +75,13 @@
 
   <div *ngIf="showSummary" style="margin-top: 20px; background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 15px; padding: 15px;">
     <h3 style="color: #1b5e20; text-align: center; margin: 0 0 10px 0;">💰 હિસાબનું સરવૈયું</h3>
-    <p>⚖️ કુલ વજન: <b>{{totalWeight}} kg</b></p>
-    <p>💸 કુલ વેચાણ: <b>₹ {{totalSales.toFixed(2)}}</b></p>
-    <p>🚜 ખર્ચ (ભાડું + ગ્રેડિંગ): <b>₹ {{totalExpense.toFixed(2)}}</b></p>
-    <p>🏛️ મંડી ચાર્જ (3%): <b>₹ {{mandiTax.toFixed(2)}}</b></p>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>⚖️ કુલ વજન:</span> <b>{{totalWeight}} kg</b></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>💸 કુલ વેચાણ:</span> <b>₹ {{totalSales.toFixed(2)}}</b></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>🚜 કુલ ખર્ચ:</span> <b>₹ {{totalExpense.toFixed(2)}}</b></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>🏛️ મંડી ચાર્જ (3%):</span> <b>₹ {{mandiTax.toFixed(2)}}</b></div>
     <div style="background: #2e7d32; color: white; padding: 10px; border-radius: 10px; text-align: center; margin-top: 10px;">
       <h2 style="margin: 0;">ચોખ્ખી આવક: ₹ {{netIncome.toFixed(2)}}</h2>
-      <small>સરેરાશ: ₹ {{averageRate.toFixed(2)}} /kg</small>
+      <small>સરેરાશ ભાવ: ₹ {{averageRate.toFixed(2)}} /kg</small>
     </div>
   </div>
 
