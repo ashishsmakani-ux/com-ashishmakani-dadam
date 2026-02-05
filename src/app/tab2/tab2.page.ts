@@ -7,22 +7,15 @@ import { Component } from '@angular/core';
 })
 export class Tab2Page {
   savedHistory: any[] = [];
-
   constructor() {}
-
-  ionViewWillEnter() {
-    this.loadData();
-  }
-
+  ionViewWillEnter() { this.loadData(); }
   loadData() {
     const data = localStorage.getItem('agri_records');
     this.savedHistory = data ? JSON.parse(data).reverse() : [];
   }
-
   deleteItem(index: number) {
     let history = JSON.parse(localStorage.getItem('agri_records') || '[]');
-    let realIndex = history.length - 1 - index;
-    history.splice(realIndex, 1);
+    history.splice(history.length - 1 - index, 1);
     localStorage.setItem('agri_records', JSON.stringify(history));
     this.loadData();
   }
