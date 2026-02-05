@@ -1,18 +1,47 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>સેવ કરેલા હિસાબ</ion-title>
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #b31217;">
+    <ion-title style="color: white; font-weight: bold;">📜 જૂનો હિસાબ</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-card *ngFor="let item of savedDataList" style="border-radius: 15px; margin-bottom: 10px; border-left: 5px solid #b31217;">
-    <ion-card-header>
-      <ion-card-title>{{ item.driverName }}</ion-card-title>
-      <ion-card-subtitle>{{ item.date | date:'dd/MM/yyyy' }}</ion-card-subtitle>
+<ion-content [fullscreen]="true" style="--background: #fff5f5;">
+  
+  <div *ngIf="savedHistory.length === 0" style="text-align: center; margin-top: 50px; color: #666;">
+    <ion-icon name="document-text-outline" style="font-size: 64px; opacity: 0.3;"></ion-icon>
+    <p>હજી સુધી કોઈ હિસાબ સેવ કરેલ નથી.</p>
+  </div>
+
+  <ion-card *ngFor="let item of savedHistory; let i = index" style="border-radius: 15px; margin-bottom: 15px; border-left: 5px solid #b31217;">
+    <ion-card-header style="padding-bottom: 5px;">
+      <ion-card-title style="font-size: 18px; color: #b31217; display: flex; justify-content: space-between;">
+        <span>📅 {{ item.date }}</span>
+        <span style="font-size: 14px; color: #666;">#{{ i + 1 }}</span>
+      </ion-card-title>
     </ion-card-header>
+
     <ion-card-content>
-      <p>⚖️ કુલ વજન: <b>{{ item.totalWeight }} kg</b></p>
-      <h2 style="color: #2e7d32;">ચોખ્ખી આવક: ₹ {{ item.netIncome }}</h2>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <span>🏛️ મંડી: <b>{{ item.mandi }}</b></span>
+        <span>🚚 ગાડી: <b>{{ item.driver }}</b></span>
+      </div>
+      <div style="display: flex; justify-content: space-between; border-top: 1px dashed #ddd; padding-top: 8px;">
+        <span style="color: #2e7d32;">ચોખ્ખી આવક:</span>
+        <b style="font-size: 18px; color: #2e7d32;">₹ {{ item.netIncome }}</b>
+      </div>
+      
+      <ion-row style="margin-top: 10px;">
+        <ion-col size="6">
+          <ion-button fill="outline" color="danger" expand="block" size="small" (click)="deleteItem(i)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon> કાઢી નાખો
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button fill="solid" color="success" expand="block" size="small" (click)="shareAgain(item)">
+            <ion-icon name="logo-whatsapp" slot="start"></ion-icon> શેર કરો
+          </ion-button>
+        </ion-col>
+      </ion-row>
     </ion-card-content>
   </ion-card>
+
 </ion-content>
